@@ -26,12 +26,14 @@ import com.yoyo.smtpms.entity.MainEntity;
 import com.yoyo.smtpms.entity.RecordEntity;
 import com.yoyo.smtpms.util.DateUtils;
 import com.yoyo.smtpms.util.ExcelUtil;
+import com.yoyo.smtpms.util.JsonHelper;
 import com.yoyo.smtpms.util.SPUtil;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -158,12 +160,18 @@ public class MySmartTable<T> extends SmartTable {
                                             updateMainExcelToServer(mainEntity);
                                             updateToServer(mainEntity);
                                             RecordEntity recordEntity = new RecordEntity();
-                                            recordEntity.setLineNumber(String.valueOf(SPUtil.getInt(context, "lineNumber", 0)));
+                                            recordEntity.setLineNumber("T"+(SPUtil.getInt(context, "lineNumber", 0)+1));
                                             recordEntity.setBatchNumber(mainEntity.getBatchNumber());
                                             recordEntity.setOnDayProduction(String.valueOf(mainEntity.getOnDayProduction()));
                                             recordEntity.setProgramName(mainEntity.getProgramA());
                                             recordEntity.setRecordTime(DateUtils.getUserDate("yyyyMMddHHmmss"));
                                             recordEntity.setUserName(SPUtil.getString(context, "name", "007"));
+                                            List<RecordEntity> recordEntities = JsonHelper.getRecordEntity();
+                                            if (recordEntities == null){
+                                                recordEntities = new ArrayList<>();
+                                            }
+                                            recordEntities.add(recordEntity);
+                                            JsonHelper.saveRecordEntity(recordEntities);
                                             updateRecordToServer(recordEntity);
                                         }
                                         dialog.dismiss();

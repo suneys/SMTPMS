@@ -240,6 +240,14 @@ public class MainActivity extends AppCompatActivity {
                     showIpDialog();
             }
         });
+        Button btnRecord = view.findViewById(R.id.btn_record);
+        btnRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,RecordActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showNameDialog() {

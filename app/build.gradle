@@ -46,5 +46,3 @@ dependencies {
     implementation files('libs/poi-3.5-FINAL/poi-ooxml-3.5-FINAL-20090928.jar')
     implementation files('libs/poi-3.5-FINAL/poi-scratchpad-3.5-FINAL-20090928.jar')
 }
-
-
