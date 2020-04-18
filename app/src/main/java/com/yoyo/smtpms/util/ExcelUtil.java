@@ -5,6 +5,7 @@ import android.os.Environment;
 import com.yoyo.smtpms.entity.DetailEntity;
 import com.yoyo.smtpms.entity.MainEntity;
 
+import com.yoyo.smtpms.entity.PickingEntity;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -205,7 +206,7 @@ public class ExcelUtil {
         }
         WritableWorkbook wwb = Workbook.createWorkbook(file);
         //创建sheet
-        WritableSheet ws = wwb.createSheet("首检记录", 0);
+        WritableSheet ws = wwb.createSheet("sheet1", 0);
         Label labelPartNumber = new Label(0, 0, "料号");
         Label componentValue = new Label(1, 0, "元件值");
         Label quantity = new Label(2, 0, "数量");
@@ -284,53 +285,53 @@ public class ExcelUtil {
             }else {
                 tagNumber5C = new Label(8, (i + 1), detailEntities.get(i).getTagNumber5());
             }
-            Label tagNumber6C ;
-            if(detailEntities.get(i).getTagNuberIsCheck()[5] == 1){
-                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
-                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
-                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
-                tagNumber6C = new Label(9, (i + 1), detailEntities.get(i).getTagNumber6(),wcfFC);
-            }else {
-                tagNumber6C = new Label(9, (i + 1), detailEntities.get(i).getTagNumber6());
-            }
-            Label tagNumber7C ;
-            if(detailEntities.get(i).getTagNuberIsCheck()[6] == 1){
-                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
-                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
-                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
-                tagNumber7C = new Label(10, (i + 1), detailEntities.get(i).getTagNumber7(),wcfFC);
-            }else {
-                tagNumber7C = new Label(10, (i + 1), detailEntities.get(i).getTagNumber7());
-            }
-
-            Label tagNumber8C ;
-            if(detailEntities.get(i).getTagNuberIsCheck()[7] == 1){
-                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
-                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
-                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
-                tagNumber8C = new Label(11, (i + 1), detailEntities.get(i).getTagNumber8(),wcfFC);
-            }else {
-                tagNumber8C = new Label(11, (i + 1), detailEntities.get(i).getTagNumber8());
-            }
-            Label tagNumber9C ;
-            if(detailEntities.get(i).getTagNuberIsCheck()[8] == 1){
-                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
-                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
-                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
-                tagNumber9C = new Label(12, (i + 1), detailEntities.get(i).getTagNumber9(),wcfFC);
-            }else {
-                tagNumber9C = new Label(12, (i + 1), detailEntities.get(i).getTagNumber9());
-            }
-
-            Label tagNumber10C ;
-            if(detailEntities.get(i).getTagNuberIsCheck()[9] == 1){
-                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
-                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
-                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
-                tagNumber10C = new Label(13, (i + 1), detailEntities.get(i).getTagNumber10(),wcfFC);
-            }else {
-                tagNumber10C = new Label(13, (i + 1), detailEntities.get(i).getTagNumber10());
-            }
+//            Label tagNumber6C ;
+//            if(detailEntities.get(i).getTagNuberIsCheck()[5] == 1){
+//                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
+//                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
+//                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+//                tagNumber6C = new Label(9, (i + 1), detailEntities.get(i).getTagNumber6(),wcfFC);
+//            }else {
+//                tagNumber6C = new Label(9, (i + 1), detailEntities.get(i).getTagNumber6());
+//            }
+//            Label tagNumber7C ;
+//            if(detailEntities.get(i).getTagNuberIsCheck()[6] == 1){
+//                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
+//                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
+//                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+//                tagNumber7C = new Label(10, (i + 1), detailEntities.get(i).getTagNumber7(),wcfFC);
+//            }else {
+//                tagNumber7C = new Label(10, (i + 1), detailEntities.get(i).getTagNumber7());
+//            }
+//
+//            Label tagNumber8C ;
+//            if(detailEntities.get(i).getTagNuberIsCheck()[7] == 1){
+//                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
+//                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
+//                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+//                tagNumber8C = new Label(11, (i + 1), detailEntities.get(i).getTagNumber8(),wcfFC);
+//            }else {
+//                tagNumber8C = new Label(11, (i + 1), detailEntities.get(i).getTagNumber8());
+//            }
+//            Label tagNumber9C ;
+//            if(detailEntities.get(i).getTagNuberIsCheck()[8] == 1){
+//                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
+//                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
+//                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+//                tagNumber9C = new Label(12, (i + 1), detailEntities.get(i).getTagNumber9(),wcfFC);
+//            }else {
+//                tagNumber9C = new Label(12, (i + 1), detailEntities.get(i).getTagNumber9());
+//            }
+//
+//            Label tagNumber10C ;
+//            if(detailEntities.get(i).getTagNuberIsCheck()[9] == 1){
+//                WritableFont wfc = new WritableFont(WritableFont.ARIAL,10,WritableFont.NO_BOLD, false,
+//                        UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.RED);
+//                WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+//                tagNumber10C = new Label(13, (i + 1), detailEntities.get(i).getTagNumber10(),wcfFC);
+//            }else {
+//                tagNumber10C = new Label(13, (i + 1), detailEntities.get(i).getTagNumber10());
+//            }
             ws.addCell(PartNumberC);
             ws.addCell(componentValueC);
             ws.addCell(quantityC);
@@ -340,15 +341,90 @@ public class ExcelUtil {
             ws.addCell(tagNumber3C);
             ws.addCell(tagNumber4C);
             ws.addCell(tagNumber5C);
-            ws.addCell(tagNumber6C);
-            ws.addCell(tagNumber7C);
-            ws.addCell(tagNumber8C);
-            ws.addCell(tagNumber9C);
-            ws.addCell(tagNumber10C);
+//            ws.addCell(tagNumber6C);
+//            ws.addCell(tagNumber7C);
+//            ws.addCell(tagNumber8C);
+//            ws.addCell(tagNumber9C);
+//            ws.addCell(tagNumber10C);
 
         }
         wwb.write();// 写入数据
         wwb.close();// 关闭文件
 
     }
+
+    public static void creatPickingExcel(List<DetailEntity> detailEntities,String fileName) throws Exception
+    {
+        fileName = Environment.getExternalStorageDirectory().getPath() + "/SMTPMS/" + fileName;
+        File file = new File(fileName);
+        int count = 0;
+        if(!file.exists()){
+            file.createNewFile();
+        }
+        WritableWorkbook wwb = Workbook.createWorkbook(file);
+        //创建sheet
+        WritableSheet ws = wwb.createSheet("sheet1", 0);
+        Label labelPartNumber = new Label(0, 0, "料号");
+        Label componentValue = new Label(1, 0, "元件值");
+        Label quantity = new Label(2, 0, "数量");
+        Label requirtQuantity = new Label(3, 0, "需求数量");
+        Label actualQuantity = new Label(4, 0, "实发数量");
+        Label materialsInformation = new Label(5, 0, "物料信息");
+        Label remark = new Label(6, 0, "备注");
+        ws.addCell(labelPartNumber);
+        ws.addCell(componentValue);
+        ws.addCell(quantity);
+        ws.addCell(requirtQuantity);
+        ws.addCell(actualQuantity);
+        ws.addCell(materialsInformation);
+        ws.addCell(remark);
+        for(int i = 0; i < detailEntities.size(); i++){
+            if(detailEntities.get(i).getRequiredQiantity() == 0)
+            {
+                count++;
+                continue;
+            }
+            Label PartNumberC = new Label(0, (i+1 - count), detailEntities.get(i).getPartNumber());
+            Label componentValueC = new Label(1, (i+1- count), detailEntities.get(i).getComponentValue());
+            Label quantityC = new Label(2,  (i+1- count), String.valueOf(detailEntities.get(i).getQuantity()));
+            Label requirtQuantityC = new Label(3,  (i+1- count), String.valueOf(detailEntities.get(i).getRequiredQiantity()));
+            Label actualQuantityC = new Label(4,  (i+1- count), String.valueOf(detailEntities.get(i).getRequiredQiantity()));
+            Label materialsInformationC = new Label(5,(i+1- count),"拍照");
+            Label remarkC = new Label(6, (i+1- count), detailEntities.get(i).getRemark());
+            ws.addCell(PartNumberC);
+            ws.addCell(componentValueC);
+            ws.addCell(quantityC);
+            ws.addCell(requirtQuantityC);
+            ws.addCell(actualQuantityC);
+            ws.addCell(materialsInformationC);
+            ws.addCell(remarkC);
+
+        }
+        wwb.write();// 写入数据
+        wwb.close();// 关闭文件
+
+    }
+
+    public static List<PickingEntity> parsePickingExcel(String fileName) {
+        List<PickingEntity> pickingEntities = null;
+        try {
+            List<Map<String, String>> datas = ExcelUtil.readExcel(fileName, 0);
+            pickingEntities = new ArrayList<>();
+            for (int i = 0; i < datas.size(); i++) {
+                Map<String, String> data = datas.get(i);
+                PickingEntity detailEntity = new PickingEntity();
+                detailEntity.setPartNumber(data.get("料号"));
+                detailEntity.setComponentValue(data.get("元件值"));
+                detailEntity.setRemark(data.get("备注"));
+                detailEntity.setQuantity(Integer.parseInt(data.get("数量")));
+                detailEntity.setRequiredQuantity(Integer.parseInt(data.get("需求数量")));
+                detailEntity.setActualQuantity(Integer.parseInt(data.get("实发数量")));
+                pickingEntities.add(detailEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pickingEntities;
+    }
+
 }

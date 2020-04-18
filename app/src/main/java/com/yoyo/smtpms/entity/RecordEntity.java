@@ -34,13 +34,20 @@ public class RecordEntity {
      */
     @SmartColumn(id = 5, name = "当日产量")
     private String onDayProduction;
+
+    @SmartColumn(id = 6, name = "内容")
+    private String requireQuantity;
     /**
      * 记录时间
      */
-    @SmartColumn(id = 6, name = "记录时间")
+    @SmartColumn(id = 7, name = "记录时间")
     private String recordTime;
 
 
+    /**
+     * 剩余数量
+     */
+    private int remainingQuantity;
 
     public String getUserName() {
         return userName;
@@ -88,5 +95,21 @@ public class RecordEntity {
 
     public void setLineNumber(String lineNumber) {
         this.lineNumber = lineNumber;
+    }
+
+    public String getRequireQuantity() {
+        return requireQuantity;
+    }
+
+    public void setRequireQuantity(String requireQuantity) {
+        this.requireQuantity = requireQuantity;
+    }
+
+    public int getRemainingQuantity() {
+        return remainingQuantity;
+    }
+
+    public void setRemainingQuantity(int remainingQuantity) {
+        this.remainingQuantity = remainingQuantity;
     }
 }

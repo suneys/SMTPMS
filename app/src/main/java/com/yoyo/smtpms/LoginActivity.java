@@ -7,7 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.yoyo.smtpms.util.JsonHelper;
 import com.yoyo.smtpms.util.SPUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,6 +39,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!etName.getText().toString().equals("") && !etIp.getText().toString().equals("")){
+                    List<String> userNameList = JsonHelper.getUserNameList(LoginActivity.this);
+                    if(userNameList == null){
+                        userNameList = new ArrayList<>();
+                    }
+                    userNameList.add(etName.getText().toString().trim());
+                    JsonHelper.saveUserNameList(LoginActivity.this,userNameList);
                     SPUtil.saveString(LoginActivity.this,"name",etName.getText().toString().trim());
                     SPUtil.saveString(LoginActivity.this,"severIP",etIp.getText().toString().trim());
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);

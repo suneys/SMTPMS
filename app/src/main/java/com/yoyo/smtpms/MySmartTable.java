@@ -106,6 +106,9 @@ public class MySmartTable<T> extends SmartTable {
                         }
                         if(!SPUtil.getString(context, "name", "007").equals("AAA")) {
                             updateToServer(t.get(row));
+                            if(context instanceof MainActivity){
+                                ((MainActivity) context).setMainEntity(t.get(row));
+                            }
                         }
                         getConfig().setContentCellBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {
                             @Override
@@ -120,6 +123,12 @@ public class MySmartTable<T> extends SmartTable {
                     } else if (column.getColumnName().equals("当日产量")) {
                         if (preRow != row) {
                             return;
+                        }
+                        if(context instanceof MainActivity){
+                            if(((MainActivity) context).showForceRefreshDialog())
+                            {
+                                return;
+                            }
                         }
                         final EditText editText = new EditText(context);
                         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -157,8 +166,8 @@ public class MySmartTable<T> extends SmartTable {
                                             ExcelUtil.updateMainExcel(((MainActivity) context).getLineNumber(), mainEntity);
                                             notifyDataChanged();
                                             //uploadFile("精密线体计划排产表.XLS");
-                                            updateMainExcelToServer(mainEntity);
-                                            updateToServer(mainEntity);
+                                            //updateMainExcelToServer(mainEntity);
+                                            //updateToServer(mainEntity);
                                             RecordEntity recordEntity = new RecordEntity();
                                             recordEntity.setLineNumber("T"+(SPUtil.getInt(context, "lineNumber", 0)+1));
                                             recordEntity.setBatchNumber(mainEntity.getBatchNumber());
@@ -166,13 +175,15 @@ public class MySmartTable<T> extends SmartTable {
                                             recordEntity.setProgramName(mainEntity.getProgramA());
                                             recordEntity.setRecordTime(DateUtils.getUserDate("yyyyMMddHHmmss"));
                                             recordEntity.setUserName(SPUtil.getString(context, "name", "007"));
+                                            recordEntity.setRequireQuantity("修改当日产量");
                                             List<RecordEntity> recordEntities = JsonHelper.getRecordEntity();
                                             if (recordEntities == null){
                                                 recordEntities = new ArrayList<>();
                                             }
                                             recordEntities.add(recordEntity);
                                             JsonHelper.saveRecordEntity(recordEntities);
-                                            updateRecordToServer(recordEntity);
+                                            //updateRecordToServer(recordEntity);
+                                            updateMainExcelToServer(mainEntity,recordEntity);
                                         }
                                         dialog.dismiss();
                                     }
@@ -195,6 +206,10 @@ public class MySmartTable<T> extends SmartTable {
                         intent.putExtra("detailFileName", detailFileName);
                         intent.putExtra("programName", "A面程序名".equals(column.getColumnName()) ? t.get(row).getProgramA() : t.get(row).getProgramB());
                         intent.putExtra("batchNumber", t.get(row).getBatchNumber());
+                        intent.putExtra("planned",t.get(row).getPlanned());
+                        intent.putExtra("repairableSpares",t.get(row).getRepairableSpares());
+                        intent.putExtra("cumulativeProduction",t.get(row).getCumulativeProduction());
+                        intent.putExtra("lineNum","T"+(((MainActivity) context).lineNumber + 1));
                         context.startActivity(intent);
 
                     }
@@ -206,15 +221,20 @@ public class MySmartTable<T> extends SmartTable {
         return (PageTableData) tableData;
     }
 
-    private void updateMainExcelToServer(MainEntity mainEntity) {
+    private void updateMainExcelToServer(MainEntity mainEntity,RecordEntity recordEntity) {
         int lineNumber = SPUtil.getInt(context, "lineNumber", 0);
         RequestParams params = new RequestParams("http://"
                 + SPUtil.getString(context, "severIP", "192.168.1.1") + ":8080"
                 + "/day27/FileServlet?method=updateMainExcel");
+        String jsonString = JSON.toJSONString(mainEntity);
+        String jsonString1 = JSON.toJSONString(recordEntity);
         params.addBodyParameter("sheet",String.valueOf(lineNumber));
         params.addBodyParameter("row",String.valueOf(mainEntity.getRow()));
         params.addBodyParameter("statusA",mainEntity.getStatusA());
         params.addBodyParameter("cumulativeProduction",String.valueOf(mainEntity.getCumulativeProduction()));
+        params.addBodyParameter("lineNumber",String.valueOf(lineNumber));
+        params.addBodyParameter("smtpmsEntity",jsonString);
+        params.addBodyParameter("record",jsonString1);
         x.http().post(params, new Callback.ProgressCallback<String>() {
             @Override
             public void onWaiting() {

@@ -1,11 +1,13 @@
 package com.yoyo.smtpms;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -50,16 +53,25 @@ public class MainActivity extends AppCompatActivity {
     private MySmartTable<MainEntity> table;
 
     public boolean isRunning = true;
-    private int lineNumber = 0;
+    //判断是否要刷新，以便得到最新数据
+    public boolean isRefresh = true;
+    public int lineNumber = 0;
     private AbstractWheel spLineNumber;
     private TextView tvLineNumber;
     private TableData<MainEntity> tableData;
 
     private TextView tvIpValue;
     private TextView tvNameValue;
+    private Spinner spNameList;
     private TextView tvAdmin;
 
+    private Handler timerHandler;
+    private Runnable myTimerRun;
+
     private TextView tvLoadingMessage;
+
+    private MainEntity mainEntity = null;
+    private Button btnSmdrs = null;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     //读写权限
@@ -82,13 +94,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BaseUtil.setFullSreen(this);
+
         lineNumber = SPUtil.getInt(this, "lineNumber", 0);
         tvLineNumber = (TextView) findViewById(R.id.tv_line_number);
         tvLineNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isAdmin || SPUtil.getString(MainActivity.this, "name", "007").equals("AAA")) {
-                    showDialogPlus();
+                if (isAdmin || SPUtil.getString(MainActivity.this, "name", "007").equals("AAA")) {
+                    showDialogPlus(strLineNumber, new MyCallback() {
+                        @Override
+                        public void myCall() {
+                            lineNumber = spLineNumber.getCurrentItem();
+                            SPUtil.saveInt(MainActivity.this, "lineNumber", lineNumber);
+                            tvLineNumber.setText("T" + (lineNumber + 1));
+                            table.setData(ExcelUtil.parseExcel(lineNumber));
+
+                        }
+                    });
                 }
             }
         });
@@ -115,11 +137,33 @@ public class MainActivity extends AppCompatActivity {
                 normalDialog.show();
             }
         });
+        btnSmdrs = findViewById(R.id.btn_smdrs);
+        btnSmdrs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mainEntity != null) {
+                    //要调用另一个APP的activity所在的包名
+                    String packageName = "com.yoyo.smtcontroler";
+                    //要调用另一个APP的activity名字
+                    String activity = "com.yoyo.smtcontroler.MainActivity";
+                    ComponentName component = new ComponentName(packageName, activity);
+                    Intent intent = new Intent();
+                    intent.setComponent(component);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("BatchNumber", mainEntity.getBatchNumber());
+                    intent.putExtra("ProgramA", mainEntity.getProgramA());
+                    intent.putExtra("LineNumber", "T" + (lineNumber + 1));
+                    intent.putExtra("userName", SPUtil.getString(MainActivity.this, "name", "007"));
+                    startActivity(intent);
+                }
+
+            }
+        });
         tvLineNumber.setText("T" + (lineNumber + 1));
         tvLoadingMessage = findViewById(R.id.tv_loading_message);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
-        onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
@@ -148,6 +192,13 @@ public class MainActivity extends AppCompatActivity {
         }
         initSlidingMenu();
         new MyThread().start();
+        timerHandler = new Handler();
+        myTimerRun = new Runnable() {
+            @Override
+            public void run() {
+                isRefresh = true;
+            }
+        };
     }
 
     @Override
@@ -171,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showDialogPlus() {
+    private void showDialogPlus(String[] items, final MyCallback myCallback) {
         final DialogPlus dialogPlus = new DialogPlus.Builder(this)
                 .setContentHolder(new ViewHolder(R.layout.content))
                 .setFooter(R.layout.footer)
@@ -179,10 +230,10 @@ public class MainActivity extends AppCompatActivity {
                 .create();
         View holderView = dialogPlus.getHolderView();
         spLineNumber = (AbstractWheel) holderView.findViewById(R.id.line_number);
-        ArrayWheelAdapter<String> adapter = new ArrayWheelAdapter<String>(this, strLineNumber);
+        ArrayWheelAdapter<String> adapter = new ArrayWheelAdapter<String>(this, items);
         adapter.setTextSize(18);
         spLineNumber.setViewAdapter(adapter);
-        spLineNumber.setCurrentItem(lineNumber);
+        spLineNumber.setCurrentItem(0);
         spLineNumber.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
@@ -201,10 +252,7 @@ public class MainActivity extends AppCompatActivity {
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lineNumber = spLineNumber.getCurrentItem();
-                SPUtil.saveInt(MainActivity.this, "lineNumber", lineNumber);
-                tvLineNumber.setText("T" + (lineNumber + 1));
-                table.setData(ExcelUtil.parseExcel(lineNumber));
+                myCallback.myCall();
                 dialogPlus.dismiss();
             }
         });
@@ -223,6 +271,24 @@ public class MainActivity extends AppCompatActivity {
         View view = slidingMenu.getRootView();
         tvIpValue = view.findViewById(R.id.tv_ipValue);
         tvNameValue = view.findViewById(R.id.tv_nameValue);
+        tvNameValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final List<String> userNameList = JsonHelper.getUserNameList(MainActivity.this);
+                if (userNameList == null) {
+                    return;
+                }
+                String[] items = userNameList.toArray(new String[userNameList.size()]);
+                showDialogPlus(items, new MyCallback() {
+                    @Override
+                    public void myCall() {
+                        int currentItem = spLineNumber.getCurrentItem();
+                        tvNameValue.setText(userNameList.get(currentItem));
+                        SPUtil.saveString(MainActivity.this, "name", userNameList.get(currentItem));
+                    }
+                });
+            }
+        });
         tvIpValue.setText(SPUtil.getString(MainActivity.this, "severIP", "192.168.1.1"));
         tvNameValue = view.findViewById(R.id.tv_nameValue);
         tvNameValue.setText(SPUtil.getString(MainActivity.this, "name", "007"));
@@ -237,14 +303,14 @@ public class MainActivity extends AppCompatActivity {
         btnIp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    showIpDialog();
+                showIpDialog();
             }
         });
         Button btnRecord = view.findViewById(R.id.btn_record);
         btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,RecordActivity.class);
+                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                 startActivity(intent);
             }
         });
@@ -254,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText etUsername = new EditText(MainActivity.this);
         final EditText etPassword = new EditText(MainActivity.this);
         etPassword.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         etUsername.setLayoutParams(layoutParams);
         etPassword.setLayoutParams(layoutParams);
         RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
@@ -283,25 +349,32 @@ public class MainActivity extends AppCompatActivity {
                 String userName = etUsername.getText().toString().trim();
 
                 if (!userName.isEmpty()) {
-                    if("admin".equals(userName)){
+                    if ("admin".equals(userName)) {
                         alertDialog.setTitle("请输入密码");
                         etUsername.setVisibility(View.GONE);
-                        if(etPassword.getVisibility() == View.VISIBLE){
+                        if (etPassword.getVisibility() == View.VISIBLE) {
                             String password = etPassword.getText().toString().trim();
-                            if("9527".equals(password)){
+                            if ("9527".equals(password)) {
                                 isAdmin = true;
                                 tvAdmin.setVisibility(View.VISIBLE);
                                 alertDialog.dismiss();
-                            }else{
+                            } else {
                                 alertDialog.setTitle("密码错误，请重新输入");
                             }
 
-                        }else {
+                        } else {
                             etPassword.setVisibility(View.VISIBLE);
                         }
 
-                    }else{
+                    } else {
                         tvNameValue.setText(userName);
+                        List<String> userNameList = JsonHelper.getUserNameList(MainActivity.this);
+                        if (userNameList != null) {
+                        } else {
+                            userNameList = new ArrayList<>();
+                        }
+                        userNameList.add(userName);
+                        JsonHelper.saveUserNameList(MainActivity.this, userNameList);
                         SPUtil.saveString(MainActivity.this, "name", userName);
                         alertDialog.dismiss();
                     }
@@ -314,6 +387,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public boolean showForceRefreshDialog() {
+        if (isRefresh) {
+            final TextView textView = new TextView(MainActivity.this);
+            textView.setText("请先刷新界面。");
+            textView.setTextSize(20);
+            textView.setGravity(Gravity.CENTER);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle("提示").setView(textView)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            swipeRefreshLayout.setRefreshing(true);
+                            onRefreshListener.onRefresh();
+                            isRefresh = false;
+                            timerHandler.postDelayed(myTimerRun,10*60*1000);
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+            return true;
+        }
+        return false;
+    }
 
     private void showIpDialog() {
         final EditText editText = new EditText(MainActivity.this);
@@ -490,6 +587,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void setMainEntity(MainEntity mainEntity) {
+        btnSmdrs.setEnabled(true);
+        this.mainEntity = mainEntity;
+    }
+
+    public interface MyCallback {
+        public void myCall();
     }
 }
 

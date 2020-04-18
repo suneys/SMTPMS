@@ -39,9 +39,13 @@
             </intent-filter>
         </activity>
         <activity
+                android:name=".RecordActivity"
                 android:screenOrientation="landscape"
-                android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                android:name=".RecordActivity">
+                android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        </activity>
+        <activity android:name=".PickingActivity"
+                  android:screenOrientation="landscape"
+                  android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         </activity>
     </application>
 

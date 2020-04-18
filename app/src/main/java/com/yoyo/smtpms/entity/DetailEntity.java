@@ -23,6 +23,17 @@ public class DetailEntity {
     private String tagNumber8;
     private String tagNumber9;
     private String tagNumber10;
+    private int requiredQiantity;
+
+    public int getRequiredQiantity() {
+        return requiredQiantity;
+    }
+
+    public void setRequiredQiantity(int requiredQiantity) {
+        this.requiredQiantity = requiredQiantity;
+    }
+
+
 
     /**
      * 0~4表示位号，5表示元件值

@@ -23,31 +23,49 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:layout_height="50dp">
-            <LinearLayout
-                    android:orientation="horizontal"
+            <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <TextView
-                        android:id="@+id/tvAdmin"
-                        android:textColor="#ff0000"
-                        android:text="管理员模式"
-                        android:visibility="gone"
+                    android:layout_height="match_parent">
+                <Button
+                        android:id="@+id/btn_smdrs"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                <TextView
-                        android:text="四川长虹精密电子科技有限公司（SMTPMS）"
-                        android:textSize="20sp"
-                        android:gravity="center_horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-            </LinearLayout>
-            <TextView
-                    android:text="T1"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/tv_line_number"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_selector"
+                        android:text="SMDRS"
+                        android:enabled="false"
+                />
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <TextView
+                                android:id="@+id/tvAdmin"
+                                android:textColor="#ff0000"
+                                android:text="管理员模式"
+                                android:visibility="gone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        <TextView
+                                android:text="四川长虹精密电子科技有限公司（SMTPMS）"
+                                android:textSize="20sp"
+                                android:gravity="center_horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                    <TextView
+                            android:text="T1"
+                            android:gravity="center_horizontal"
+                            android:id="@+id/tv_line_number"
+                            android:textSize="20sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"

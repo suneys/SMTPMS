@@ -28,10 +28,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile 'com.github.huangyanbin:SmartTable:2.2.0'
-    compile 'com.orhanobut:dialogplus:1.7@aar'
-    compile project(':SlidingMenulibrary')
-    compile 'org.xutils:xutils:3.5.0'
+    implementation 'com.github.huangyanbin:SmartTable:2.2.0'
+    implementation 'com.orhanobut:dialogplus:1.7@aar'
+    implementation project(':SlidingMenulibrary')
+    implementation 'org.xutils:xutils:3.5.0'
     implementation files('libs/jxl.jar')
     implementation files('libs/fastjson-1.2.31.jar')
     implementation files('libs/poi-3.5-FINAL/lib/commons-logging-1.1.jar')

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".PickingActivity">
+
+    <TextView
+            android:id="@+id/tv_detail_loading_message"
+            android:visibility="gone"
+            android:text="数据加载中，请稍后..."
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:background="#00c8c8"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="50dp">
+            <TextView
+                    android:id="@+id/batchNumber"
+                    android:text="批次号："
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            <TextView
+                    android:id="@+id/programName"
+                    android:text="程序名："
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"
+                    android:layout_height="match_parent" />
+        </LinearLayout>
+        <com.yoyo.smtpms.MySmartTable
+                android:id="@+id/picking_table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        />
+    </LinearLayout>
+
+
+</RelativeLayout>

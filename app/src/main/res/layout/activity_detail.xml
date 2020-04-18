@@ -33,7 +33,7 @@
             <TextView
                     android:id="@+id/programName"
                     android:text="程序名："
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:textSize="20sp"
                     android:gravity="center_vertical"
@@ -43,6 +43,23 @@
                     android:text="首检"
                     android:background="@drawable/btn_selector"
                     android:layout_marginLeft="10dp"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <Button
+                    android:id="@+id/btn_sort"
+                    android:text="排序"
+                    android:background="@drawable/btn_selector"
+                    android:layout_marginLeft="10dp"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <Button
+                    android:id="@+id/btn_picking"
+                    android:text="领料"
+                    android:background="@drawable/btn_selector"
+                    android:layout_marginLeft="10dp"
+                    style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             <TextView
